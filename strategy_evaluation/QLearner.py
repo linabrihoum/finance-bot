@@ -1,11 +1,3 @@
-"""
-Project 8: Strategy Evaluation
-Student Name: Lina Brihoum
-GT User ID: lbrihoum3
-GT ID: 903261368
-ML4T CS7646
-QLearner.py
-"""
 
 import numpy as np
 import random as rand
@@ -16,8 +8,7 @@ class QLearner(object):
         return 'lbrihoum3'
 
     def __init__(self, num_states=100, num_actions = 4, alpha = 0.2, gamma = 0.9, rar = 0.5, radr = 0.99, dyna = 0, verbose = False):
-
-        self.verbose = verbose  		   	  			    		  		  		    	 		 		   		 		  
+		   	  			    		  		  		    	 		 		   		 		  
         self.num_actions = num_actions
         self.num_states = num_states
         self.alpha = alpha

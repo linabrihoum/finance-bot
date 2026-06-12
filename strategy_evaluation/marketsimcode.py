@@ -1,11 +1,3 @@
-"""
-Project 8: Strategy Evaluation
-Student Name: Lina Brihoum
-GT User ID: lbrihoum3
-GT ID: 903261368
-ML4T CS7646
-marketsimcode.py
-"""
 
 import pandas as pd
 from util import get_data

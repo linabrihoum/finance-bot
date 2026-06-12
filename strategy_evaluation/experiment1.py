@@ -1,11 +1,4 @@
-"""
-Project 8: Strategy Evaluation
-Student Name: Lina Brihoum
-GT User ID: lbrihoum3
-GT ID: 903261368
-ML4T CS7646
-experiment1.py
-"""
+
 
 import matplotlib.pyplot as plt
 import datetime as dt

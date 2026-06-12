@@ -1,31 +1,3 @@
-""""""  		  	   		   	 			  		 			     			  	  		 	  	 		 			  		  			
-"""  		  	   		   	 			  		 			     			  	  		 	  	 		 			  		  			
-Template for implementing StrategyLearner  (c) 2016 Tucker Balch  		  	   		   	 			  		 			     			  	  		 	  	 		 			  		  			
-  		  	   		   	 			  		 			     			  	  		 	  	 		 			  		  			
-Copyright 2018, Georgia Institute of Technology (Georgia Tech)  		  	   		   	 			  		 			     			  	  		 	  	 		 			  		  			
-Atlanta, Georgia 30332  		  	   		   	 			  		 			     			  	  		 	  	 		 			  		  			
-All Rights Reserved  		  	   		   	 			  		 			     			  	  		 	  	 		 			  		  			
-  		  	   		   	 			  		 			     			  	  		 	  	 		 			  		  			
-Template code for CS 4646/7646  		  	   		   	 			  		 			     			  	  		 	  	 		 			  		  			
-  		  	   		   	 			  		 			     			  	  		 	  	 		 			  		  			
-Georgia Tech asserts copyright ownership of this template and all derivative  		  	   		   	 			  		 			     			  	  		 	  	 		 			  		  			
-works, including solutions to the projects assigned in this course. Students  		  	   		   	 			  		 			     			  	  		 	  	 		 			  		  			
-and other users of this template code are advised not to share it with others  		  	   		   	 			  		 			     			  	  		 	  	 		 			  		  			
-or to make it available on publicly viewable websites including repositories  		  	   		   	 			  		 			     			  	  		 	  	 		 			  		  			
-such as github and gitlab.  This copyright statement should not be removed  		  	   		   	 			  		 			     			  	  		 	  	 		 			  		  			
-or edited.  		  	   		   	 			  		 			     			  	  		 	  	 		 			  		  			
-  		  	   		   	 			  		 			     			  	  		 	  	 		 			  		  			
-We do grant permission to share solutions privately with non-students such  		  	   		   	 			  		 			     			  	  		 	  	 		 			  		  			
-as potential employers. However, sharing with other current or future  		  	   		   	 			  		 			     			  	  		 	  	 		 			  		  			
-students of CS 7646 is prohibited and subject to being investigated as a  		  	   		   	 			  		 			     			  	  		 	  	 		 			  		  			
-GT honor code violation.  		  	   		   	 			  		 			     			  	  		 	  	 		 			  		  			
-  		  	   		   	 			  		 			     			  	  		 	  	 		 			  		  			
------do not edit anything above this line---  		  	   		   	 			  		 			     			  	  		 	  	 		 			  		  			
-  
-Student Name: Lina Brihoum
-GT User ID: lbrihoum3
-GT ID: 903261368  	   		   	 			  		 			     			  	  		 	  	 		 			  		  			
-"""
 
 import datetime as dt
 import pandas as pd
@@ -40,8 +12,7 @@ class StrategyLearner(object):
     def __init__(self, verbose=False, impact=0.0, commission=0.0):
         """  		  	   		   	 			  		 			     			  	  		 	  	 		 			  		  			
         Constructor method  		  	   		   	 			  		 			     			  	  		 	  	 		 			  		  			
-        """  		  	   		   	 			  		 			     			  	  		 	  	 		 			  		  			
-        self.verbose = verbose  		  	   		   	 			  		 			     			  	  		 	  	 		 			  		  			
+        """  		  	   		   	 			  		 			     			  	  		 	  	 		 			  		  					  	   		   	 			  		 			     			  	  		 	  	 		 			  		  			
         self.impact = impact  		  	   		   	 			  		 			     			  	  		 	  	 		 			  		  			
         self.commission = commission
         self.q_learner = ql.QLearner(num_states=1000, num_actions=3, alpha=0.2, gamma=0.9, rar=0.8, radr=0.9)
