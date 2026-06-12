@@ -1,21 +1,8 @@
-"""
-Project 8: Strategy Evaluation
-Student Name: Lina Brihoum
-GT User ID: lbrihoum3
-GT ID: 903261368
-ML4T CS7646
-testproject.py
-"""
-
 import ManualStrategy as ms
 import experiment1 as exp1
 import experiment2 as exp2
 import StrategyLearner as sl
 import datetime as dt
-
-
-def author():
-    return 'lbrihoum3'
 
 
 if __name__ == '__main__':

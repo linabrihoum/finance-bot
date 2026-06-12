@@ -7,10 +7,6 @@ import ManualStrategy as ms
 import marketsimcode as mk
 
 
-def author():
-    return 'lbrihoum3'
-
-
 def graph(plotFig, fig_name, title, x_label, y_label):
     plotFig.plot()
     plt.legend()
@@ -34,13 +30,15 @@ def experiment1(symbol = "JPM", sd=dt.datetime(2008,1,1), ed=dt.datetime(2009,12
 
     b_trades = m_trades.copy()
     b_trades[:] = 0
-    b_trades.ix[0,0] = 1000
-    b_trades.ix[-1,0] = -1000
+    b_trades.iloc[0, 0] = 1000
+    b_trades.iloc[-1, 0] = -1000
+
+    b_portv = mk.compute_portvals(b_trades, start_val=sv, commission=commission, impact=impact)
 
     df = m_trades.copy()
-    df['Manual Strategy'] = (m_portv[0:] / m_portv.ix[0])
-    df['Strategy Learner'] = (sl_portv[0:] / sl_portv.ix[0])
-    df['Benchmark'] = ((mk.compute_portvals(b_trades, start_val=sv, commission=commission, impact=impact))[0:] / (mk.compute_portvals(b_trades, start_val=sv, commission=commission, impact=impact)).ix[0])
+    df['Manual Strategy'] = m_portv / m_portv.iloc[0]
+    df['Strategy Learner'] = sl_portv / sl_portv.iloc[0]
+    df['Benchmark'] = b_portv / b_portv.iloc[0]
     df = df.drop(df.columns[0], axis=1)
 
     # plotFig, fig_name, title, x_label, y_label

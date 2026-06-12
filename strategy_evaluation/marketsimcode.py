@@ -4,12 +4,9 @@ from util import get_data
 import numpy as np
 
 
-def author():
-    return 'lbrihoum3'
-
 def compute_portvals(df_trades, start_val=1000000, commission=9.95, impact=0.005):
-    if isinstance(type(df_trades), type("")):
-        odf = pd.read_csv(df_trades)
+    if isinstance(df_trades, str):
+        df_trades = pd.read_csv(df_trades, index_col="Date", parse_dates=True)
 
     start_date = df_trades.index.min()
     end_date = df_trades.index.max()

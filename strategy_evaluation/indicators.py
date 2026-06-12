@@ -5,9 +5,6 @@ import datetime as dt
 import util as ut
 import matplotlib.pyplot as plt
 
-def author():
-    return "lbrihoum3"
-
 def graph(plotFig, fig_name, title, x_label, y_label):
     plotFig.plot()
     plt.legend()
@@ -20,7 +17,7 @@ def graph(plotFig, fig_name, title, x_label, y_label):
 def simple_moving_avg(symbol=['JPM'], sd = dt.datetime(2008,1,1), ed = dt.datetime(2009,12,31), window = 10):
     prices = ut.get_data(symbol,pd.date_range(sd,ed))
     prices = prices[symbol]
-    prices = prices[0:]/prices.ix[0] #normalized prices
+    prices = prices[0:]/prices.iloc[0] # normalized prices
     simple_moving_avg = prices.rolling(window=window).mean() #SMA
     prices['SMA'] = simple_moving_avg #adding SMA to prices df
     prices["SMA Ratio"] = prices.values[:, 0] / prices.values[:, 1]
@@ -30,7 +27,7 @@ def simple_moving_avg(symbol=['JPM'], sd = dt.datetime(2008,1,1), ed = dt.dateti
 def bollinger_band(symbol=['JPM'], sd = dt.datetime(2008,1,1), ed = dt.datetime(2009,12,31), window = 10):
     prices = ut.get_data(symbol, pd.date_range(sd,ed))
     prices = prices[symbol]
-    prices = prices[0:]/prices.ix[0] #normalized prices
+    prices = prices[0:]/prices.iloc[0] # normalized prices
     simple_moving_avg = prices.rolling(window=window).mean()
     rolling_std_dev = prices.rolling(window=window).std()
     bottom_band = simple_moving_avg - 2 * rolling_std_dev
@@ -46,9 +43,10 @@ def bollinger_band(symbol=['JPM'], sd = dt.datetime(2008,1,1), ed = dt.datetime(
 def momentum(symbol=['JPM'], sd = dt.datetime(2008,1,1), ed = dt.datetime(2009,12,31), window = 10):
     prices = ut.get_data(symbol, pd.date_range(sd, ed))
     prices = prices[symbol]
-    prices = prices[0:] / prices.ix[0]  # normalized prices
+    prices = prices[0:] / prices.iloc[0]  # normalized prices
 
-    moment = prices.rolling(window=window).mean()
+    # rate of change: (price[t] - price[t-n]) / price[t-n]
+    moment = (prices - prices.shift(window)) / prices.shift(window)
     prices['Momentum'] = moment
     prices["Momentum Ratio"] = moment
 
@@ -57,7 +55,7 @@ def momentum(symbol=['JPM'], sd = dt.datetime(2008,1,1), ed = dt.datetime(2009,1
 
 def graph_simple_moving_avg(prices, window):
 
-    prices = prices[0:]/prices.ix[0]
+    prices = prices[0:]/prices.iloc[0]
     simple_moving_avg = prices.rolling(window=window).mean()
     prices['SMA'] = simple_moving_avg
     prices["SMA Ratio"] = prices.values[:, 0] / prices.values[:, 1]
@@ -70,7 +68,7 @@ def graph_simple_moving_avg(prices, window):
 
 def graph_bollinger_band(prices, window):
 
-    prices = prices[0:]/prices.ix[0] #normalized prices
+    prices = prices[0:]/prices.iloc[0] # normalized prices
     simple_moving_avg = prices.rolling(window=window).mean()
     rolling_std = prices.rolling(window=window).std()
     bottom_band = simple_moving_avg - 2 * rolling_std
@@ -88,9 +86,9 @@ def graph_bollinger_band(prices, window):
 
 def graph_momentum(prices, window):
 
-    prices = prices[0:] / prices.ix[0]  # normalized prices
+    prices = prices[0:] / prices.iloc[0]  # normalized prices
 
-    moment = prices.rolling(window=window).mean()
+    moment = (prices - prices.shift(window)) / prices.shift(window)
     prices['Momentum'] = moment
     prices["Momentum Ratio"] = moment
 

@@ -19,73 +19,30 @@ class ManualStrategy(object):
         self.short = []
         self.long = []
 
-    def author(self):
-        return 'lbrihoum3'
-
     def testPolicy(self, symbol="JPM", sd=dt.datetime(2008, 1, 1), ed=dt.datetime(2009, 12, 31), sv=100000):
-        df = ut.get_data([symbol], pd.date_range(sd, ed))
-        p_df = df[[symbol]]
-        p_df = p_df.fillna(method='ffill')
-        p_df = p_df.fillna(method='bfill')
-
-        df_trades = df[['JPM']]
-        df_trades = df_trades.rename(columns={'JPM': symbol}).astype({symbol: 'int32'})
-        df_trades[:] = 0
-
-        p_df = p_df / p_df.iloc[0]
-
         bb_indicator = ind.bollinger_band(symbol=[symbol], sd=sd, ed=ed)
         sma_indicator = ind.simple_moving_avg(symbol=[symbol], sd=sd, ed=ed)
         mom_indicator = ind.momentum(symbol=[symbol], sd=sd, ed=ed)
 
-        p_df['SMA'] = ind.simple_moving_avg(symbol=[symbol], sd=sd, ed=ed)
-        p_df['BBP'] = ind.bollinger_band(symbol=[symbol], sd=sd, ed=ed)
-        p_df['Momentum'] = ind.momentum(symbol=[symbol], sd=sd, ed=ed)
+        signals = pd.DataFrame(index=bb_indicator.index)
+        signals['sma'] = [-1 if x > 1.02 else 1 if x < 0.98 else 0 for x in sma_indicator]
+        signals['bb'] = [-1 if x > 1.5 else 1 if x < -0.5 else 0 for x in bb_indicator]
+        signals['momentum'] = [-1 if x > 1.02 else 1 if x < 0.98 else 0 for x in mom_indicator]
+        signals['holding'] = [0 if x == 0 else 1000 if x > 0 else -1000 for x in signals.sum(axis=1)]
 
-        temp = 0
+        df_trades = pd.DataFrame(index=signals.index, columns=[symbol], data=0, dtype='float64')
+        df_trades[symbol].values[1:] = signals['holding'].values[1:] - signals['holding'].values[:-1]
 
-        for date, row in p_df.iterrows():
-            # Buy
-            if row['BBP'] <= 0.25 and row['SMA'] > 0.95 and row['Momentum'] < 0:
-                if temp == 0:
-                    temp = 1000
-                    df_trades.loc[date, symbol] = 1000
-                    self.short.append(date)
-                elif temp == -1000:
-                    temp = 1000
-                    df_trades.loc[date, symbol] = 2000
-                    self.long.append(date)
-
-            # Sell
-            elif row['SMA'] >= 0.9 and row['BBP'] < 1.05 and row['Momentum'] > 0:
-                if temp == 0:
-                    temp = -1000
-                    df_trades.loc[date, symbol] = -1000
-                    self.short.append(date)
-                elif temp == 1000:
-                    temp = -1000
-                    df_trades.loc[date, symbol] = -2000
-                    self.long.append(date)
-
-        execute = pd.DataFrame(index=bb_indicator.index)
-
-        execute['sma'] = [-1 if x > 1.02 else 1 if x < 0.98 else 0 for x in sma_indicator]
-        execute['bb'] = [-1 if x > 1.5 else 1 if x < -.5 else 0 for x in bb_indicator]
-        execute['momentum'] = [-1 if x > 1.02 else 1 if x < .98 else 0 for x in mom_indicator]
-        execute['holding'] = [0 if x == 0 else 1000 if x > 0 else -1000 for x in execute.sum(axis=1)]
-
-        execute[symbol] = 0
-        execute[symbol].values[1:] = execute['holding'].values[1:] - execute['holding'].values[:-1]
-        df_trades = execute[[symbol]]
+        self.long = df_trades.index[df_trades[symbol] > 0].tolist()
+        self.short = df_trades.index[df_trades[symbol] < 0].tolist()
 
         return df_trades
 
     def benchmark(self, symbol, sd, ed, sv=100000):
-        symbol = ['JPM']
-
+        symbols = [symbol]
         dates = pd.date_range(sd, ed)
-        prices_all = ut.get_data(symbol, dates)  # automatically adds SPY
-        prices = prices_all[symbol]
+        prices_all = ut.get_data(symbols, dates)
+        prices = prices_all[symbols]
 
         portvals = mk.compute_portvals(prices, start_val=sv, commission=9.95, impact=0.005)
         return portvals
@@ -138,7 +95,6 @@ class ManualStrategy(object):
         portvals_normalized = port_vals / port_vals.iloc[0,]
         portvals_bench_normalized = port_vals_bench / port_vals_bench.iloc[0,]
 
-        # change the date above before running this for out-sample
         joined = portvals_normalized.to_frame().join(portvals_bench_normalized.to_frame(), lsuffix="top", rsuffix="b")
         joined.columns = ["Manual Strategy", "Benchmark"]
         fig = joined.plot(title="Manual Strategy vs Benchmark Out-Sample", color=["red", "green"])

@@ -1,14 +1,12 @@
-
 import numpy as np
 import random as rand
 
 
 class QLearner(object):
-    def author(self):
-        return 'lbrihoum3'
-
-    def __init__(self, num_states=100, num_actions = 4, alpha = 0.2, gamma = 0.9, rar = 0.5, radr = 0.99, dyna = 0, verbose = False):
-		   	  			    		  		  		    	 		 		   		 		  
+    def __init__(self, num_states=100, num_actions=4, alpha=0.2, gamma=0.9, rar=0.5, radr=0.99, dyna=0, verbose=False, random_state=42):
+        rand.seed(random_state)
+        np.random.seed(random_state)
+        self.verbose = verbose
         self.num_actions = num_actions
         self.num_states = num_states
         self.alpha = alpha
@@ -17,7 +15,7 @@ class QLearner(object):
         self.radr = radr
         self.dyna = dyna
 
-        self.s = 0  		   	  			    		  		  		    	 		 		   		 		  
+        self.s = 0
         self.a = 0
 
         self.Q = np.zeros((num_states, num_actions))
@@ -26,10 +24,10 @@ class QLearner(object):
 
     def querysetstate(self, s):
         # For initial state and for final policy. Will choose action randomly or maxarg
-        """  		   	  			    		  		  		    	 		 		   		 		  
-        @summary: Update the state without updating the Q-table  		   	  			    		  		  		    	 		 		   		 		  
-        @param s: The new state  		   	  			    		  		  		    	 		 		   		 		  
-        @returns: The selected action  		   	  			    		  		  		    	 		 		   		 		  
+        """
+        @summary: Update the state without updating the Q-table
+        @param s: The new state
+        @returns: The selected action
         """
 
         if rand.random() <= self.rar:
@@ -42,12 +40,12 @@ class QLearner(object):
 
         return action
 
-    def query(self,s_prime,r):  		   	  			    		  		  		    	 		 		   		 		  
-        """  		   	  			    		  		  		    	 		 		   		 		  
-        @summary: Update the Q table and return an action  		   	  			    		  		  		    	 		 		   		 		  
-        @param s_prime: The new state  		   	  			    		  		  		    	 		 		   		 		  
-        @param r: The ne state  		   	  			    		  		  		    	 		 		   		 		  
-        @returns: The selected action  		   	  			    		  		  		    	 		 		   		 		  
+    def query(self,s_prime,r):
+        """
+        @summary: Update the Q table and return an action
+        @param s_prime: The new state
+        @param r: The ne state
+        @returns: The selected action
         """
 
         self.Q[self.s, self.a] = (1 - self.alpha) * self.Q[self.s, self.a] + self.alpha * (

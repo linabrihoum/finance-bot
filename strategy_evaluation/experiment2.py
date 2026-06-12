@@ -4,10 +4,6 @@ import matplotlib.pyplot as plt
 import marketsimcode as mksim
 
 
-def author():
-    return 'lbrihoum3'
-
-
 def graph(plotFig, fig_name, title, x_label, y_label):
     plotFig.plot()
     plt.legend()
@@ -24,9 +20,9 @@ def experiment2(s_trades, sv, commission):
     sl3 = mksim.compute_portvals(s_trades, start_val=sv, commission=commission, impact=0.010)
 
     df = s_trades.copy()
-    df['Impact=0.000'] = sl1[0:] / sl1.ix[0]
-    df['Impact=0.005'] = sl2[0:] / sl2.ix[0]
-    df['Impact=0.010'] = sl3[0:] / sl3.ix[0]
+    df['Impact=0.000'] = sl1 / sl1.iloc[0]
+    df['Impact=0.005'] = sl2 / sl2.iloc[0]
+    df['Impact=0.010'] = sl3 / sl3.iloc[0]
     df = df.drop(df.columns[0], axis=1)
 
     # plotFig, fig_name, title, x_label, y_label

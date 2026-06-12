@@ -8,22 +8,22 @@ import indicators as ind
 
 
 class StrategyLearner(object):
-    # constructor  		  	   		   	 			  		 			     			  	  		 	  	 		 			  		  			
+    # constructor
     def __init__(self, verbose=False, impact=0.0, commission=0.0):
-        """  		  	   		   	 			  		 			     			  	  		 	  	 		 			  		  			
-        Constructor method  		  	   		   	 			  		 			     			  	  		 	  	 		 			  		  			
-        """  		  	   		   	 			  		 			     			  	  		 	  	 		 			  		  					  	   		   	 			  		 			     			  	  		 	  	 		 			  		  			
-        self.impact = impact  		  	   		   	 			  		 			     			  	  		 	  	 		 			  		  			
+        """
+        Constructor method
+        """
+        self.impact = impact
         self.commission = commission
         self.q_learner = ql.QLearner(num_states=1000, num_actions=3, alpha=0.2, gamma=0.9, rar=0.8, radr=0.9)
 
-    # this method should create a QLearner, and train it for trading  		  	   		   	 			  		 			     			  	  		 	  	 		 			  		  			
-    def add_evidence(  		  	   		   	 			  		 			     			  	  		 	  	 		 			  		  			
-        self,  		  	   		   	 			  		 			     			  	  		 	  	 		 			  		  			
-        symbol="IBM",  		  	   		   	 			  		 			     			  	  		 	  	 		 			  		  			
-        sd=dt.datetime(2008, 1, 1),  		  	   		   	 			  		 			     			  	  		 	  	 		 			  		  			
-        ed=dt.datetime(2009, 1, 1),  		  	   		   	 			  		 			     			  	  		 	  	 		 			  		  			
-        sv=10000,  		  	   		   	 			  		 			     			  	  		 	  	 		 			  		  			
+    # this method should create a QLearner, and train it for trading
+    def add_evidence(
+        self,
+        symbol="IBM",
+        sd=dt.datetime(2008, 1, 1),
+        ed=dt.datetime(2009, 1, 1),
+        sv=10000,
     ):
         self.sv = sv
 
@@ -55,17 +55,17 @@ class StrategyLearner(object):
 
         while not converged:
             df_trades[:] = 0
-            q = self.q_learner.querysetstate(data.ix[0].values[0])
+            q = self.q_learner.querysetstate(data.iloc[0].values[0])
 
             if q == 0:
                 holding = -1000
-                df_trades.ix[window-1] = holding
+                df_trades.iloc[window-1] = holding
             elif q == 1:
                 holding = 0
-                df_trades.ix[window-1] = holding
+                df_trades.iloc[window-1] = holding
             elif q == 2:
                 holding = 1000
-                df_trades.ix[window-1] = holding
+                df_trades.iloc[window-1] = holding
 
             for i in range(1, data.shape[0]):
                 if q == 0:
@@ -75,7 +75,7 @@ class StrategyLearner(object):
                 elif q == 2:
                     impact_mult = 1
 
-                q = self.q_learner.query(data.ix[i].values[0], (holding * ((prices.ix[data.index[i]].values[0]/prices.ix[data.index[i-1]].values[0])-1 - self.impact*impact_mult)))
+                q = self.q_learner.query(data.iloc[i].values[0], (holding * ((prices.loc[data.index[i]].values[0]/prices.loc[data.index[i-1]].values[0])-1 - self.impact*impact_mult)))
 
                 if q == 0:
                     if holding == 0:
@@ -99,11 +99,11 @@ class StrategyLearner(object):
             portval_prev = portval[-1].copy()
 
     def testPolicy(
-        self,  		  	   		   	 			  		 			     			  	  		 	  	 		 			  		  			
-        symbol="IBM",  		  	   		   	 			  		 			     			  	  		 	  	 		 			  		  			
-        sd=dt.datetime(2009, 1, 1),  		  	   		   	 			  		 			     			  	  		 	  	 		 			  		  			
-        ed=dt.datetime(2010, 1, 1),  		  	   		   	 			  		 			     			  	  		 	  	 		 			  		  			
-        sv=10000,  		  	   		   	 			  		 			     			  	  		 	  	 		 			  		  			
+        self,
+        symbol="IBM",
+        sd=dt.datetime(2009, 1, 1),
+        ed=dt.datetime(2010, 1, 1),
+        sv=10000,
     ):
         syms = [symbol]
         dates = pd.date_range(sd, ed)
@@ -127,7 +127,7 @@ class StrategyLearner(object):
         df_trades[:] = 0
         cash = 0
         for i in range(0, data.shape[0]):
-            q = self.q_learner.querysetstate(data.ix[i].values[0])
+            q = self.q_learner.querysetstate(data.iloc[i].values[0])
 
             if q == 0:
                 if cash == 0:
@@ -144,5 +144,3 @@ class StrategyLearner(object):
 
         return df_trades
 
-    def author(self):
-        return 'lbrihoum3'
