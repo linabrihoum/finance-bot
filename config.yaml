@@ -1,0 +1,30 @@
+# Hyperparameters for the Strategy Evaluation project.
+# Edit here rather than in source files to tune behaviour without touching code.
+
+indicators:
+  window: 10                # rolling window in trading days for SMA, BBP, and Momentum
+
+q_learner:
+  num_states: 1000          # 10 bins per indicator × 3 indicators = 10^3 states
+  num_actions: 3            # 0 = short, 1 = flat, 2 = long
+  alpha: 0.2                # learning rate
+  gamma: 0.9                # discount factor
+  rar: 0.8                  # initial random-action rate (exploration)
+  radr: 0.9                 # random-action decay rate per step
+  dyna: 0                   # Dyna-Q planning steps per real step (0 = disabled)
+
+strategy_learner:
+  convergence_threshold: 100.0   # stop training when final portval changes by less than this
+  min_episodes: 30               # minimum training episodes before checking convergence
+
+market:
+  commission: 9.95          # flat fee per trade in dollars
+  impact: 0.005             # market impact as fraction of share price
+
+backtest:
+  symbol: "JPM"
+  start_value: 100000
+  in_sample_start: "2008-01-01"
+  in_sample_end:   "2009-12-31"
+  out_sample_start: "2010-01-01"
+  out_sample_end:   "2011-12-31"
