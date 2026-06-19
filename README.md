@@ -1,5 +1,7 @@
 # Strategy Evaluation: Q-Learning vs Rules-Based Trading
 
+[![CI](https://github.com/linabrihoum/finance-bot/actions/workflows/ci.yml/badge.svg)](https://github.com/linabrihoum/finance-bot/actions/workflows/ci.yml)
+
 A comparison of reinforcement learning and rules-based trading strategies on JPM equity data. The RL agent uses tabular Q-learning with Dyna-Q experience replay; the rules-based strategy votes across three technical indicators. Both are evaluated against a buy-and-hold benchmark on the same portfolio simulator with configurable transaction costs.
 
 ---
