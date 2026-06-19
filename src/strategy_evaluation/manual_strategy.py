@@ -9,6 +9,7 @@ import pandas as pd
 from . import indicators as ind
 from . import market_simulator as mk
 from . import util as ut
+from .plotting import _OUTPUTS_DIR
 
 
 class ManualStrategy:
@@ -165,7 +166,7 @@ class ManualStrategy:
         fig.set_ylabel("Normalized Portfolio Value")
         plt.legend()
         plt.grid(which = "both")
-        plt.savefig("Manual Strategy vs Benchmark In-Sample.png")
+        plt.savefig(_OUTPUTS_DIR / "Manual Strategy vs Benchmark In-Sample.png")
         plt.clf()
 
     def out_sample(
@@ -200,7 +201,7 @@ class ManualStrategy:
         plt.xlim(portvals_bench_normalized.index.min(), portvals_bench_normalized.index.max())
         plt.legend()
         plt.grid(which = "both")
-        plt.savefig("Manual Strategy vs Benchmark Out-Sample.png")
+        plt.savefig(_OUTPUTS_DIR / "Manual Strategy vs Benchmark Out-Sample.png")
         plt.clf()
 
 

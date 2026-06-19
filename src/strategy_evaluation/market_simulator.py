@@ -75,7 +75,9 @@ def compute_portvals(
             continue
 
         price = df_p.loc[date, row["Symbol"]]
-        shares = row["Shares"] 
+        shares = row["Shares"]
+        if shares == 0:
+            continue
 
         if row["Order"] == "BUY":
             ledger.loc[date, row["Symbol"]] += shares

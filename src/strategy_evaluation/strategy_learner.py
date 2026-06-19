@@ -119,12 +119,13 @@ class StrategyLearner:
         sma = ind.simple_moving_avg(symbol = syms, sd = sd, ed = ed, window = window)
         mom = ind.momentum(symbol = syms, sd = sd, ed = ed, window = window)
 
-        # Discretize indicators into quantile bins and combine into a single state integer
-        bb_bins = self._discretize(bb[window - 1:], window)
-        sma_bins = self._discretize(sma[window - 1:], window)
-        mom_bins = self._discretize(mom[window - 1:], window)
+        # Slice from window (not window-1) so momentum NaNs are excluded.
+        # Momentum needs window lookback rows, so index window-1 is still NaN.
+        bb_bins = self._discretize(bb[window:], window)
+        sma_bins = self._discretize(sma[window:], window)
+        mom_bins = self._discretize(mom[window:], window)
         states = pd.DataFrame(
-            100 * bb_bins + 10 * sma_bins + mom_bins,
+            (100 * bb_bins + 10 * sma_bins + mom_bins).astype(int),
             index=bb_bins.index,
             columns=syms,
         )
@@ -143,14 +144,14 @@ class StrategyLearner:
             df_trades[:] = 0
 
             # Actions: 0 = short, 1 = flat, 2 = long
-            action = self.q_learner.querysetstate(states.iloc[0].values[0])
+            action = self.q_learner.querysetstate(int(states.iloc[0].values[0]))
             if action == 0:
                 holding = -1000
             elif action == 2:
                 holding = 1000
             else:
                 holding = 0
-            df_trades.iloc[window - 1] = holding
+            df_trades.loc[states.index[0]] = holding
 
             for i in range(1, states.shape[0]):
                 # Impact multiplier aligns the reward sign with the position direction
@@ -161,7 +162,7 @@ class StrategyLearner:
                 ) - 1
                 reward = holding * (daily_return - self.impact * impact_mult)
 
-                action = self.q_learner.query(states.iloc[i].values[0], reward)
+                action = self.q_learner.query(int(states.iloc[i].values[0]), reward)
 
                 if action == 0:
                     if holding == 0:
@@ -228,11 +229,11 @@ class StrategyLearner:
         sma = ind.simple_moving_avg(symbol = syms, sd = sd, ed = ed, window = window)
         mom = ind.momentum(symbol = syms, sd = sd, ed = ed, window = window)
 
-        bb_bins = self._discretize(bb[window - 1:], window)
-        sma_bins = self._discretize(sma[window - 1:], window)
-        mom_bins = self._discretize(mom[window - 1:], window)
+        bb_bins = self._discretize(bb[window:], window)
+        sma_bins = self._discretize(sma[window:], window)
+        mom_bins = self._discretize(mom[window:], window)
         states = pd.DataFrame(
-            100 * bb_bins + 10 * sma_bins + mom_bins,
+            (100 * bb_bins + 10 * sma_bins + mom_bins).astype(int),
             index=bb_bins.index,
             columns=syms,
         )
@@ -242,7 +243,7 @@ class StrategyLearner:
         position = 0  # current share holdings
 
         for i in range(states.shape[0]):
-            action = self.q_learner.querysetstate(states.iloc[i].values[0])
+            action = self.q_learner.querysetstate(int(states.iloc[i].values[0]))
 
             if action == 0:  # short
                 if position == 0:
